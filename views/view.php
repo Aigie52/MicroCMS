@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link href="microcms.css" rel="stylesheet">
+    <link href="../web/microcms.css" rel="stylesheet">
     <title>MicroCMS - Home</title>
 </head>
 <body>
@@ -11,10 +11,10 @@
 </header>
 <?php foreach ($articles as $article): ?>
     <article>
-        <h2><?= $article['art_title'] ?></h2>
-        <p><?= $article['art_content'] ?></p>
+        <h2><?= $article->getTitle() ?></h2>
+        <p><?= $article->getContent() ?></p>
     </article>
-<?php endforeach; ?>
+<?php endforeach ?>
 <footer class="footer">
     <a href="https://github.com/Aigie52/MicroCMS">MicroCMS</a> is a minimalistic CMS built as a showcase for modern PHP development.
 </footer>
