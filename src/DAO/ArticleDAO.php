@@ -12,21 +12,18 @@ namespace MicroCMS\DAO;
 use Doctrine\DBAL\Connection;
 use MicroCMS\Domain\Article;
 
-class ArticleDAO
+class ArticleDAO extends DAO
 {
-    /**
-     * Database connection
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * ArticleDAO constructor.
-     * @param Connection $db
-     */
-    public function __construct(Connection $db)
+    public function find($id)
     {
-        $this-> db = $db;
+        $sql = "select * from t_article where art_id=?";
+        $row = $this->getDb()->fetchAssoc($sql, array($id));
+
+        if ($row) {
+            return $this->buildDomainObject($row);
+        } else {
+            throw new \Exception("No article matching id " . $id);
+        }
     }
 
     /**
@@ -36,12 +33,12 @@ class ArticleDAO
     public function findAll()
     {
         $sql = "select * from t_article order by art_id desc";
-        $result = $this->db->fetchAll($sql);
+        $result = $this->getDb()->fetchAll($sql);
 
         $articles = array();
         foreach ($result as $row) {
             $articleId = $row['art_id'];
-            $articles[$articleId] = $this->buildArticle($row);
+            $articles[$articleId] = $this->buildDomainObject($row);
         }
 
         return $articles;
@@ -52,7 +49,7 @@ class ArticleDAO
      * @param array $row
      * @return Article
      */
-    private function buildArticle(array $row)
+    protected function buildDomainObject(array $row)
     {
         $article = new Article();
         $article->setId($row['art_id']);
