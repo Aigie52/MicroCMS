@@ -19,7 +19,7 @@ class Comment
 
     /**
      * Comment author
-     * @var string
+     * @var User
      */
     private $author;
 
@@ -62,10 +62,10 @@ class Comment
     }
 
     /**
-     * @param string $author
+     * @param User $author
      * @return $this
      */
-    public function setAuthor(string $author)
+    public function setAuthor(User $author)
     {
         $this->author = $author;
         return $this;
