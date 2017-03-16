@@ -9,7 +9,6 @@
 namespace MicroCMS\DAO;
 
 
-use Doctrine\DBAL\Connection;
 use MicroCMS\Domain\Comment;
 
 class CommentDAO extends DAO
@@ -89,4 +88,29 @@ class CommentDAO extends DAO
         return $comment;
     }
 
+    /**
+     * Save a comment into the database
+     * @param Comment $comment
+     */
+    public function save(Comment $comment)
+    {
+        $commentData = array(
+            'art_id' => $comment->getArticle()->getId(),
+            'usr_id' => $comment->getAuthor()->getId(),
+            'com_content' => $comment->getContent()
+        );
+
+        if ($comment->getId()) {
+            // The comment has already been saved : update it
+            $this->getDb()->update('t_comment', $commentData, array(
+                'com_id' => $comment->getId()
+            ));
+        } else {
+            // The comment has never been saved : insert it
+            $this->getDb()->insert('t_comment', $commentData);
+            // Get the id of the newly created comment and set it on the entity
+            $id = $this->getDb()->lastInsertId();
+            $comment->setId($id);
+        }
+    }
 }

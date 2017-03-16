@@ -38,7 +38,7 @@ class Comment
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -54,9 +54,9 @@ class Comment
     }
 
     /**
-     * @return string
+     * @return User
      */
-    public function getAuthor(): string
+    public function getAuthor()
     {
         return $this->author;
     }
@@ -74,7 +74,7 @@ class Comment
     /**
      * @return string
      */
-    public function getContent(): string
+    public function getContent()
     {
         return $this->content;
     }

@@ -3,6 +3,9 @@
 use MicroCMS\DAO\ArticleDAO;
 use MicroCMS\DAO\UserDAO;
 use Silex\Provider\DoctrineServiceProvider;
+use Silex\Provider\FormServiceProvider;
+use Silex\Provider\LocaleServiceProvider;
+use Silex\Provider\TranslationServiceProvider;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
 
@@ -35,6 +38,9 @@ $app->register(new \Silex\Provider\SecurityServiceProvider(), array(
         ),
     ),
 ));
+$app->register(new FormServiceProvider());
+$app->register(new LocaleServiceProvider());
+$app->register(new TranslationServiceProvider());
 
 // Register services.
 $app['dao.article'] = function ($app) {
