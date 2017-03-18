@@ -47,7 +47,7 @@ class User implements UserInterface
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -65,7 +65,7 @@ class User implements UserInterface
     /**
      * @inheritdoc
      */
-    public function getUsername(): string
+    public function getUsername()
     {
         return $this->username;
     }
@@ -79,7 +79,7 @@ class User implements UserInterface
     /**
      * @inheritdoc
      */
-    public function getPassword(): string
+    public function getPassword()
     {
         return $this->password;
     }

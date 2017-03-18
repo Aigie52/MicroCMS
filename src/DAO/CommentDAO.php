@@ -39,6 +39,23 @@ class CommentDAO extends DAO
         $this->userDAO = $userDAO;
     }
 
+    /**
+     * Returns a comment matching the supplied id
+     * @param $id
+     * @return Comment
+     * @throws \Exception
+     */
+    public function find($id)
+    {
+        $sql = "select * from t_comment where com_id=?";
+        $row = $this->getDb()->fetchAssoc($sql, array($id));
+
+        if ($row) {
+            return $this->buildDomainObject($row);
+        } else {
+            throw new \Exception("No comment matching id " . $id);
+        }
+    }
 
     /**
      * @param $articleId
@@ -61,6 +78,24 @@ class CommentDAO extends DAO
         };
 
         return $comments;
+    }
+
+    /**
+     * Returns a list of all comments, sorted by date (most recent first)
+     * @return array
+     */
+    public function findAll()
+    {
+        $sql = "select * from t_comment order by com_id desc";
+        $result = $this->getDb()->fetchAll($sql);
+
+        // Convert query result to an array of domain objects
+        $entities = array();
+        foreach ($result as $row) {
+            $id = $row['com_id'];
+            $entities[$id] = $this->buildDomainObject($row);
+        }
+        return $entities;
     }
 
     /**
@@ -112,5 +147,32 @@ class CommentDAO extends DAO
             $id = $this->getDb()->lastInsertId();
             $comment->setId($id);
         }
+    }
+
+    /**
+     * Removes all comments for an article
+     * @param $articleId
+     */
+    public function deleteAllByArticle($articleId) {
+        $this->getDb()->delete('t_comment', array('art_id' => $articleId));
+    }
+
+    /**
+     * Removes a comment from the database
+     * @param $id
+     */
+    public function delete($id)
+    {
+        // Delete the comment
+        $this->getDb()->delete('t_comment', array('com_id' => $id));
+    }
+
+    /**
+     * Removes all comment for a user
+     * @param $userId
+     */
+    public function deleteAllByUser($userId)
+    {
+        $this->getDb()->delete('t_comment', array('usr_id' => $userId ));
     }
 }

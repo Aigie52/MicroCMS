@@ -2,10 +2,15 @@
 
 use MicroCMS\DAO\ArticleDAO;
 use MicroCMS\DAO\UserDAO;
+use Silex\Provider\AssetServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\LocaleServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
+use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
+use Silex\Provider\TwigServiceProvider;
+use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
 
@@ -15,14 +20,19 @@ ExceptionHandler::register();
 
 // Register service providers.
 $app->register(new DoctrineServiceProvider());
-$app->register(new \Silex\Provider\TwigServiceProvider(), array(
+$app->register(new TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
-$app->register(new \Silex\Provider\AssetServiceProvider(), array(
+$app['twig'] = $app->extend('twig', function (Twig_Environment $twig, $app) {
+    $twig->addExtension(new Twig_Extensions_Extension_Text());
+    return $twig;
+});
+$app->register(new ValidatorServiceProvider());
+$app->register(new AssetServiceProvider(), array(
     'assets.version' => 'v1',
 ));
-$app->register(new \Silex\Provider\SessionServiceProvider());
-$app->register(new \Silex\Provider\SecurityServiceProvider(), array(
+$app->register(new SessionServiceProvider());
+$app->register(new SecurityServiceProvider(), array(
     'security.firewalls' => array(
         'secured' => array(
             'pattern' => '^/',
@@ -36,6 +46,12 @@ $app->register(new \Silex\Provider\SecurityServiceProvider(), array(
                 return new UserDAO($app['db']);
             },
         ),
+    ),
+    'security.role_hierarchy' => array(
+        'ROLE_ADMIN' => array('ROLE_USER'),
+    ),
+    'security.access_rules' => array(
+        array('^/admin', 'ROLE_ADMIN'),
     ),
 ));
 $app->register(new FormServiceProvider());
