@@ -60,7 +60,7 @@ $app->register(new FormServiceProvider());
 $app->register(new LocaleServiceProvider());
 $app->register(new TranslationServiceProvider());
 $app->register(new MonologServiceProvider(), array(
-    'monolog.logfile' => __DIR__.'/../var/log.microcms.log',
+    'monolog.logfile' => __DIR__.'/../var/logs/log.microcms.log',
     'monolog.name' => 'MicroCMS',
     'monolog.level' => $app['monolog.level']
 ));
@@ -92,4 +92,12 @@ $app->error(function (Exception $e, Request $request, $code) use ($app) {
             $message = 'Something went wrong.';
     }
     return $app['twig']->render('error.html.twig', array('message' => $message));
+});
+
+// Register JSON data decoder for JSON requests
+$app->before(function (Request $request) {
+    if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+        $data = json_decode($request->getContent(), true);
+        $request->request->replace(is_array($data) ? $data : array());
+    }
 });
