@@ -1,0 +1,4 @@
+[2017-03-18 14:01:57] MicroCMS.INFO: Matched route "{route}". {"route":"login","route_parameters":{"_controller":"[object] (Closure: {})","_route":"login"},"request_uri":"http://localhost/MicroCMS/web/login","method":"GET"} []
+[2017-03-18 14:01:57] MicroCMS.INFO: Populated the TokenStorage with an anonymous Token. [] []
+[2017-03-18 14:02:04] MicroCMS.INFO: Matched route "{route}". {"route":"home","route_parameters":{"_controller":"[object] (Closure: {})","_route":"home"},"request_uri":"http://localhost/MicroCMS/web/","method":"GET"} []
+[2017-03-18 14:02:04] MicroCMS.INFO: Populated the TokenStorage with an anonymous Token. [] []

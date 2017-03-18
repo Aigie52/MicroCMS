@@ -6,6 +6,7 @@ use Silex\Provider\AssetServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\LocaleServiceProvider;
+use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
@@ -13,6 +14,7 @@ use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
+use Symfony\Component\HttpFoundation\Request;
 
 // Register global error and exception handlers
 ErrorHandler::register();
@@ -57,6 +59,11 @@ $app->register(new SecurityServiceProvider(), array(
 $app->register(new FormServiceProvider());
 $app->register(new LocaleServiceProvider());
 $app->register(new TranslationServiceProvider());
+$app->register(new MonologServiceProvider(), array(
+    'monolog.logfile' => __DIR__.'/../var/log.microcms.log',
+    'monolog.name' => 'MicroCMS',
+    'monolog.level' => $app['monolog.level']
+));
 
 // Register services.
 $app['dao.article'] = function ($app) {
@@ -72,3 +79,17 @@ $app['dao.comment'] = function ($app) {
     return $commentDAO;
 };
 
+// Register error handler
+$app->error(function (Exception $e, Request $request, $code) use ($app) {
+    switch ($code) {
+        case 403:
+            $message = 'Access denied.';
+            break;
+        case 404:
+            $message = 'The requested resource could not be found.';
+            break;
+        default:
+            $message = 'Something went wrong.';
+    }
+    return $app['twig']->render('error.html.twig', array('message' => $message));
+});
